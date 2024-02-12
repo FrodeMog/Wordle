@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', (event) => {
     const rows = document.querySelectorAll('.RowContainer');
-    const firstRowInputs = rows[0].querySelectorAll('input');
     let currentRow = 0;
 
     // Disable all inputs except those in the first row
@@ -12,12 +11,12 @@ document.addEventListener('DOMContentLoaded', (event) => {
         }
     });
 
-    // Auto focus on next input in the current row
-    rows.forEach((row) => {
+    // Auto focus on next input in each row
+    rows.forEach((row, rowIndex) => {
         const inputs = row.querySelectorAll('input');
         inputs.forEach((input, index) => {
             input.addEventListener('input', () => {
-                if (input.value.length === 1 && index < inputs.length - 1) {
+                if (input.value.length === 1 && index < inputs.length - 1 && rowIndex === currentRow) {
                     inputs[index + 1].focus();
                 }
             });
@@ -32,6 +31,11 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
             // Enable inputs in the next row only if the current row is full
             if (isCurrentRowFull && currentRow < rows.length - 1) {
+                // Disable inputs in the current row
+                currentRowInputs.forEach(input => {
+                    input.disabled = true;
+                });
+
                 currentRow++;
                 rows[currentRow].querySelectorAll('input').forEach(input => {
                     input.disabled = false;
