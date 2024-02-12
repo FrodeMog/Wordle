@@ -4,14 +4,27 @@ body {
 }
 
 .GameContainer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 70vh;
-    width: 50vh;
     background-color: rgb(43, 43, 43);
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; 
+    width: 30%;
+    margin: 0 auto;
+}
+
+.RowContainer {
+    background-color: rgb(126, 126, 126);
+    display: flex;
+    justify-content: space-around;
+    width: 90%; 
+    margin-bottom: 10px; 
+}
+
+.TileContainer{
+    background-color: rgb(208, 208, 208);
+    width: 50px; 
+    height: 50px; 
+    margin: 10px;
 }
