@@ -9,30 +9,33 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh; 
-    width: 30%;
+    height: 75vh; 
+    width: 20%;
+    min-width: 200px;
+    min-height: 400px;
     margin: 0 auto;
 }
 
 .RowContainer {
     background-color: rgb(126, 126, 126);
     display: flex;
-    justify-content: space-around;
-    width: 90%; 
+    width: 100%; 
     margin-bottom: 10px; 
 }
 
-.TileContainer{
-    background-color: rgb(208, 208, 208);
-    width: 50px; 
-    height: 50px; 
-    margin: 10px;
+.TileContainer {
+    background-color: rgb(0, 0, 0);
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(30px, 100%)); 
+    max-width: none; 
+    max-height: none; 
 }
 
 .TileContainer input {
-    width: 40px; /* Adjust as needed */
-    height: 40px; /* Adjust as needed */
-    padding: 5px;
-    font-size: 20px; /* Adjust as needed */
+    font-size: 30px;
+    background-color: rgb(163, 163, 163);
     text-align: center;
+    text-transform: uppercase;
+    max-width: none; 
+    max-height: none; 
 }
