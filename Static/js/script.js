@@ -29,19 +29,22 @@ document.addEventListener('DOMContentLoaded', (event) => {
             const currentRowInputs = rows[currentRow].querySelectorAll('input');
             const isCurrentRowFull = Array.from(currentRowInputs).every(input => input.value.length === 1);
 
-            // Enable inputs in the next row only if the current row is full
-            if (isCurrentRowFull && currentRow < rows.length - 1) {
+            // If the current row is full
+            if (isCurrentRowFull) {
                 // Disable inputs in the current row
                 currentRowInputs.forEach(input => {
                     input.disabled = true;
                 });
 
-                currentRow++;
-                rows[currentRow].querySelectorAll('input').forEach(input => {
-                    input.disabled = false;
-                });
-                // Focus on the first input in the next row
-                rows[currentRow].querySelector('input').focus();
+                // If the current row is not the last row, enable inputs in the next row
+                if (currentRow < rows.length - 1) {
+                    currentRow++;
+                    rows[currentRow].querySelectorAll('input').forEach(input => {
+                        input.disabled = false;
+                    });
+                    // Focus on the first input in the next row
+                    rows[currentRow].querySelector('input').focus();
+                }
             }
         }
     });
