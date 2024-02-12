@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     const rows = document.querySelectorAll('.RowContainer');
     let currentRow = 0;
     const testWord = "words";
+    document.querySelector('.TileContainer input').focus();
 
     // Disable all inputs except those in the first row
     rows.forEach((row, index) => {
@@ -43,22 +44,29 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 currentRowInputs.forEach(input => {
                     input.disabled = true;
                 });
-                
-                // Create a Set to store the letters that have already been colored green or yellow
-                let coloredLetters = new Set();
 
-                // Change the color of each tile
-                currentRowInputs.forEach((tile, tileIndex) => {
-                    let tileValue = tile.value.toLowerCase();
-                    if (tileValue === testWord.charAt(tileIndex).toLowerCase()) {
-                        tile.style.backgroundColor = 'green';
-                        coloredLetters.add(tileValue);
-                    } else if (testWord.includes(tileValue) && !coloredLetters.has(tileValue)) {
-                        tile.style.backgroundColor = 'yellow';
-                        coloredLetters.add(tileValue);
-                    }
-                });
-            
+            // Create a copy of testWord to manipulate
+            let testWordCopy = testWord.split('');
+
+            // First pass: check for green
+            currentRowInputs.forEach((tile, tileIndex) => {
+                let tileValue = tile.value.toLowerCase();
+                if (tileValue === testWord.charAt(tileIndex).toLowerCase()) {
+                    tile.style.backgroundColor = 'green';
+                    // Remove the letter from testWordCopy
+                    testWordCopy[tileIndex] = '';
+                }
+            });
+
+            // Second pass: check for yellow
+            currentRowInputs.forEach((tile, tileIndex) => {
+                let tileValue = tile.value.toLowerCase();
+                if (tile.style.backgroundColor !== 'green' && testWordCopy.includes(tileValue)) {
+                    tile.style.backgroundColor = 'yellow';
+                    // Remove the first occurrence of the letter from testWordCopy
+                    testWordCopy[testWordCopy.indexOf(tileValue)] = '';
+                }
+            });
 
                 // If the current row is not the last row, enable inputs in the next row
                 if (currentRow < rows.length - 1) {
