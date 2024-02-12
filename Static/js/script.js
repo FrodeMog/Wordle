@@ -1,8 +1,44 @@
 document.addEventListener('DOMContentLoaded', (event) => {
     const rows = document.querySelectorAll('.RowContainer');
     let currentRow = 0;
-    const testWord = "words";
+    let testWord = "words";
+    let wordToCheck = 'hunch';
     document.querySelector('.TileContainer input').focus();
+
+    //API START
+    fetch('/api/randomWord')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(word => {
+        console.log(`The word to guess is: ${word}`);
+        testWord = word;
+    })
+    .catch(error => {
+        console.error('There was a problem with the fetch operation:', error);
+    });
+
+    fetch(`/api/checkWord/${wordToCheck}`)
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.exists) {
+            console.log(`${wordToCheck} exists in the database.`);
+        } else {
+            console.log(`${wordToCheck} does not exist in the database.`);
+        }
+    })
+    .catch(e => {
+        console.log('There was a problem with your fetch operation: ' + e.message);
+    });
+    //API END
 
     // Disable all inputs except those in the first row
     rows.forEach((row, index) => {
