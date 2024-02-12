@@ -28,3 +28,11 @@ body {
     height: 50px; 
     margin: 10px;
 }
+
+.TileContainer input {
+    width: 40px; /* Adjust as needed */
+    height: 40px; /* Adjust as needed */
+    padding: 5px;
+    font-size: 20px; /* Adjust as needed */
+    text-align: center;
+}
