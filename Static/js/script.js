@@ -37,20 +37,28 @@ document.addEventListener('DOMContentLoaded', (event) => {
             const currentRowInputs = rows[currentRow].querySelectorAll('input');
             const isCurrentRowFull = Array.from(currentRowInputs).every(input => input.value.length === 1);
 
-            // Change color for green correct letter and tile placement
-            currentRowInputs.forEach((tile, tileIndex) => {
-                console.log(tile.value)
-                if (tile.value.toLowerCase() === testWord.charAt(tileIndex).toLowerCase()) {
-                    tile.style.backgroundColor = 'green';
-                }
-            });
-
             // If the current row is full
             if (isCurrentRowFull) {
                 // Disable inputs in the current row
                 currentRowInputs.forEach(input => {
                     input.disabled = true;
                 });
+                
+                // Create a Set to store the letters that have already been colored green or yellow
+                let coloredLetters = new Set();
+
+                // Change the color of each tile
+                currentRowInputs.forEach((tile, tileIndex) => {
+                    let tileValue = tile.value.toLowerCase();
+                    if (tileValue === testWord.charAt(tileIndex).toLowerCase()) {
+                        tile.style.backgroundColor = 'green';
+                        coloredLetters.add(tileValue);
+                    } else if (testWord.includes(tileValue) && !coloredLetters.has(tileValue)) {
+                        tile.style.backgroundColor = 'yellow';
+                        coloredLetters.add(tileValue);
+                    }
+                });
+            
 
                 // If the current row is not the last row, enable inputs in the next row
                 if (currentRow < rows.length - 1) {
