@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', (event) => {
     const rows = document.querySelectorAll('.RowContainer');
     let currentRow = 0;
+    const testWord = "words";
 
     // Disable all inputs except those in the first row
     rows.forEach((row, index) => {
@@ -35,6 +36,14 @@ document.addEventListener('DOMContentLoaded', (event) => {
         if (event.key === 'Enter') {
             const currentRowInputs = rows[currentRow].querySelectorAll('input');
             const isCurrentRowFull = Array.from(currentRowInputs).every(input => input.value.length === 1);
+
+            // Change color for green correct letter and tile placement
+            currentRowInputs.forEach((tile, tileIndex) => {
+                console.log(tile.value)
+                if (tile.value.toLowerCase() === testWord.charAt(tileIndex).toLowerCase()) {
+                    tile.style.backgroundColor = 'green';
+                }
+            });
 
             // If the current row is full
             if (isCurrentRowFull) {
