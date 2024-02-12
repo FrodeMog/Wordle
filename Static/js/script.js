@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
             currentRowInputs.forEach((tile, tileIndex) => {
                 let tileValue = tile.value.toLowerCase();
                 if (tileValue === testWord.charAt(tileIndex).toLowerCase()) {
-                    tile.style.backgroundColor = 'green';
+                    tile.style.backgroundColor = 'rgb(0, 150, 0)';
                     // Remove the letter from testWordCopy
                     testWordCopy[tileIndex] = '';
                 }
@@ -61,8 +61,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
             // Second pass: check for yellow
             currentRowInputs.forEach((tile, tileIndex) => {
                 let tileValue = tile.value.toLowerCase();
-                if (tile.style.backgroundColor !== 'green' && testWordCopy.includes(tileValue)) {
-                    tile.style.backgroundColor = 'yellow';
+                if (tile.style.backgroundColor !== 'rgb(0, 150, 0)' && testWordCopy.includes(tileValue)) {
+                    tile.style.backgroundColor = 'rgb(180, 180, 0)';
                     // Remove the first occurrence of the letter from testWordCopy
                     testWordCopy[testWordCopy.indexOf(tileValue)] = '';
                 }
