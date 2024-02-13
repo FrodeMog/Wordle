@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         const isCurrentRowFull = Array.from(currentRowInputs).every(input => input.value.length === 1);
         let tileWord = Array.from(currentRowInputs).map(input => input.value.toLowerCase()).join('');
         let testWordCopy = testWord.split('');
-
+    
         if (!isCurrentRowFull) return; // Return if the current row is not full
     
         checkWord(tileWord).then(data => {
@@ -99,13 +99,15 @@ document.addEventListener('DOMContentLoaded', (event) => {
             });
     
             // Second pass: check for yellow
-            currentRowInputs.forEach((tile, tileIndex) => {
+            currentRowInputs.forEach((tile) => {
                 let tileValue = tile.value.toLowerCase();
                 if (tile.style.backgroundColor !== 'rgb(0, 150, 0)' && testWordCopy.includes(tileValue)) {
                     tile.style.backgroundColor = 'rgb(180, 180, 0)';
                     // Remove the first occurrence of the letter from testWordCopy
                     testWordCopy[testWordCopy.indexOf(tileValue)] = '';
                 }
+                let key = document.querySelector(`.KeyboardContainer .key[data-key="${tileValue}"]`);
+                if (key) key.style.backgroundColor = 'rgb(180, 180, 180)';
             });
     
             // If the current row is not the last row, enable inputs in the next row

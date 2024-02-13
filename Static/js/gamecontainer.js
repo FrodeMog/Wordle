@@ -50,6 +50,8 @@ function generateKeyboard() {
 
             const button = document.createElement('button');
             button.type = 'button';
+            button.className = 'key'; // Add a class to the button
+            button.setAttribute('data-key', letter.toLowerCase()); // Add a data-key attribute to the button
             button.setAttribute('aria-label', `letter ${index + 1}`);
             button.onclick = () => handleClick(button);
             button.textContent = letter;
