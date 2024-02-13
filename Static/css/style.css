@@ -68,15 +68,16 @@ h1 {
     justify-content: center;
     align-items: center;
     min-width: 200px;
-    min-height: 10px;
+    height: 40vh; 
     transform: rotate(-90deg);
 }
 
+
 .KeyboardContainer button {
-    max-width: none; 
-    max-height: none; 
-    min-width: 30px; 
-    min-height: 30px; 
+    max-width: 70px;
+    max-height: 70px;
+    min-width: 20px; 
+    min-height: 20px; 
     width: 2.5vw;
     height: 2.5vw; 
     font-size: calc(0.5vw + 7px);
@@ -89,9 +90,8 @@ h1 {
     margin-bottom: 1px;
 }
 
-
 .KeyboardContainer .backspace {
-    font-size: 0.8em; /* Adjust this value to your liking */
+    font-size: 0.8em;
 }
 
 .KeyboardContainer button:hover {
