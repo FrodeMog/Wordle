@@ -8,15 +8,24 @@ h1 {
     text-align: center;
 }
 
+.TopContainer {
+    background-color: rgb(148, 148, 148, 0);
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+
 .GameContainer {
-    background-color: rgb(24, 24, 24);
+    background-color: rgb(24, 24, 24, 0);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     width: 20%;
     height: 20%;
-    min-width: 200px;
+    min-width: 300px;
     min-height: 10px;
     margin: 0 auto;
 
@@ -26,7 +35,7 @@ h1 {
     background-color: rgb(126, 126, 126);
     display: flex;
     width: 100%; 
-    margin-bottom: 5px; 
+    margin-bottom: 0px; 
 }
 
 .TileContainer {
@@ -46,8 +55,48 @@ h1 {
     text-transform: uppercase;
     max-width: none; 
     max-height: none; 
-    margin: 5px;
+    margin: 4px;
     border: none; 
     outline: none; 
     box-shadow: none;
+    border-radius: 10px;
+}
+
+.KeyboardContainer {
+    display: flex;
+    flex-direction: row; 
+    justify-content: center;
+    align-items: center;
+    min-width: 200px;
+    min-height: 10px;
+    transform: rotate(-90deg);
+}
+
+.KeyboardContainer button {
+    max-width: none; 
+    max-height: none; 
+    min-width: 30px; 
+    min-height: 30px; 
+    width: 2.5vw;
+    height: 2.5vw; 
+    font-size: calc(0.5vw + 7px);
+    background-color: #333;
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transform: rotate(90deg); 
+    margin-bottom: 1px;
+}
+
+.KeyboardContainer button:hover {
+    background-color: rgb(39, 39, 39);
+}
+
+.KeyboardRow {
+    display: flex;
+    flex-direction: column; 
+    justify-content: center;
+    align-items: center;
+    margin: 0; 
 }
