@@ -51,6 +51,9 @@ function generateKeyboard() {
             const button = document.createElement('button');
             button.type = 'button';
             button.className = 'key'; // Add a class to the button
+            if (letter === 'Backspace') {
+                button.className += ' backspace'; // Add 'backspace' class if the letter is 'Backspace'
+            }
             button.setAttribute('data-key', letter.toLowerCase()); // Add a data-key attribute to the button
             button.setAttribute('aria-label', `letter ${index + 1}`);
             button.onclick = () => window.handleClick(button);
