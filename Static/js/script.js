@@ -3,9 +3,54 @@ document.addEventListener('DOMContentLoaded', (event) => {
     let currentRow = 0;
     let testWord = "words";
     let wordToCheck = 'hunch';
-    document.querySelector('.TileContainer input').focus();
 
-    //API START
+    getRandomWord().then(word => {
+        console.log(`The word to guess is: ${word}`);
+        testWord = word;
+    });
+    
+    // Disable all inputs
+    rows.forEach((row) => {
+        row.querySelectorAll('input').forEach(input => {
+            input.disabled = true;
+        });
+    });
+
+    // Handle onscreen keyboard
+    window.handleClick = function(button) {
+        let key = button.getAttribute('data-key');
+        const currentRowInputs = rows[currentRow].querySelectorAll('input');
+        const nextTile = Array.from(currentRowInputs).find(tile => tile.value === '');
+
+        console.log(key);
+
+        if(key === 'backspace') {
+            handleBackspaceKey()
+            return;
+        }
+
+        if(key === 'enter') {
+            handleEnterKey();
+            return;
+        }
+    
+        if (nextTile) {
+            nextTile.value = key;
+        }
+    }
+    
+    // Handle keyboard events
+    window.addEventListener('keydown', (event) => {
+        if (event.key == 'Enter'){
+            handleEnterKey();
+        }
+        if (event.key == 'Backspace'){
+            handleBackspaceKey();
+        }
+        handleLetterKeys(event);
+    });
+
+    //API
     function getRandomWord() {
         return fetch('/api/randomWord')
             .then(response => {
@@ -31,45 +76,27 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 console.error('There was a problem with the fetch operation:', error);
             });
     }
-    //API END
-
-    getRandomWord().then(word => {
-        console.log(`The word to guess is: ${word}`);
-        testWord = word;
-    });
     
+    //EVENTS
+    function handleLetterKeys(event) {
+        const currentRowInputs = rows[currentRow].querySelectorAll('input');
+        const nextTile = Array.from(currentRowInputs).find(tile => tile.value === '');
 
-    // Disable all inputs except those in the first row
-    rows.forEach((row, index) => {
-        if (index !== 0) {
-            row.querySelectorAll('input').forEach(input => {
-                input.disabled = true;
-            });
+        if (nextTile && /^[a-zA-Z]$/.test(event.key)) {
+            nextTile.value = event.key.toUpperCase();
         }
-    });
+    }
 
-    // Auto focus on next input in each row and delete last tile with 'Backspace'
-    rows.forEach((row, rowIndex) => {
-        const inputs = row.querySelectorAll('input');
-        inputs.forEach((input, index) => {
-            input.addEventListener('input', () => {
-                if (input.value.length === 1 && index < inputs.length - 1 && rowIndex === currentRow) {
-                    inputs[index + 1].focus();
-                }
-            });
 
-            input.addEventListener('keydown', (event) => {
-                if (event.key === 'Backspace' && input.value === '' && index > 0) {
-                    inputs[index - 1].value = '';
-                    inputs[index - 1].focus();
-                }
-            });
-        });
-    });
+    function handleBackspaceKey() {
+        const currentRowInputs = rows[currentRow].querySelectorAll('input');
+        const previousTile = Array.from(currentRowInputs).reverse().find(tile => tile.value !== '');
+        if (previousTile) {
+            previousTile.value = '';
+        }
+    }
 
-    window.addEventListener('keydown', (event) => {
-        if (event.key !== 'Enter') return; //Return if not Enter key
-    
+    function handleEnterKey() {
         const currentRowInputs = rows[currentRow].querySelectorAll('input');
         const isCurrentRowFull = Array.from(currentRowInputs).every(input => input.value.length === 1);
         let tileWord = Array.from(currentRowInputs).map(input => input.value.toLowerCase()).join('');
@@ -116,9 +143,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 rows[currentRow].querySelectorAll('input').forEach(input => {
                     input.disabled = false;
                 });
-                // Focus on the first input in the next row
-                rows[currentRow].querySelector('input').focus();
             }
         });
-    });
+    }
 });
