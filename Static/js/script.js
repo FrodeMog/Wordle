@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     
         checkWord(tileWord).then(data => {
             if (!data.exists) {
-                console.log(`${tileWord} does not exist in the database.`);
+                showToast(`The word '${tileWord}' does not exist in the database. Please try again.`);
                 return; // Return if the word does not exist in the database
             }
             console.log(`${tileWord} exists in the database.`);
@@ -146,9 +146,41 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 }
             });
     
-            if (currentRow < rows.length - 1) {
+            // Check if the user has won
+            if (tileWord === testWord) {
+                showToast(`Congratulations, you won! The correct word was '${testWord}'. The game will now reset.`);
+                resetGame();
+            } else if (currentRow < rows.length - 1) {
                 currentRow++;
+            } else {
+                showToast(`You have reached the maximum number of attempts. The correct word was '${testWord}'. The game will now reset.`);
+                resetGame();
             }
         });
+    }
+
+    function resetGame() {
+        currentRow = 0;
+        rows.forEach((row) => {
+            row.querySelectorAll('input').forEach(input => {
+                input.value = '';
+                input.style.backgroundColor = '';
+                input.disabled = true;
+            });
+        });
+        document.querySelectorAll('.KeyboardContainer .key').forEach(key => {
+            key.style.backgroundColor = '';
+        });
+        getRandomWord().then(word => {
+            console.log(`The new word to guess is: ${word}`);
+            testWord = word;
+        });
+    }
+
+    function showToast(message) {
+        let toast = document.getElementById("toast");
+        toast.innerHTML = message;
+        toast.className = "toast show";
+        setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 3000);
     }
 });
