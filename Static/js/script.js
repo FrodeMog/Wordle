@@ -110,27 +110,40 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 return; // Return if the word does not exist in the database
             }
             console.log(`${tileWord} exists in the database.`);
+
+            // Check for grey
+            currentRowInputs.forEach((tile) => {
+                let tileValue = tile.value.toLowerCase();
+                let key = document.querySelector(`.KeyboardContainer .key[data-key="${tileValue}"]`);
+                if (key && key.style.backgroundColor !== 'rgb(0, 150, 0)' && key.style.backgroundColor !== 'rgb(180, 180, 0)') {
+                    key.style.backgroundColor = 'rgb(150, 150, 150)';
+                }
+            });
     
-            // First pass: check for green
+            // Check for green
             currentRowInputs.forEach((tile, tileIndex) => {
                 let tileValue = tile.value.toLowerCase();
+                let key = document.querySelector(`.KeyboardContainer .key[data-key="${tileValue}"]`);
                 if (tileValue === testWord.charAt(tileIndex).toLowerCase()) {
                     tile.style.backgroundColor = 'rgb(0, 150, 0)';
                     // Remove the letter from testWordCopy
                     testWordCopy[tileIndex] = '';
+                    if (key) key.style.backgroundColor = 'rgb(0, 150, 0)';
                 }
             });
-    
-            // Second pass: check for yellow
+
+            // Check for yellow
             currentRowInputs.forEach((tile) => {
                 let tileValue = tile.value.toLowerCase();
+                let key = document.querySelector(`.KeyboardContainer .key[data-key="${tileValue}"]`);
                 if (tile.style.backgroundColor !== 'rgb(0, 150, 0)' && testWordCopy.includes(tileValue)) {
                     tile.style.backgroundColor = 'rgb(180, 180, 0)';
                     // Remove the first occurrence of the letter from testWordCopy
                     testWordCopy[testWordCopy.indexOf(tileValue)] = '';
+                    if (key && key.style.backgroundColor !== 'rgb(0, 150, 0)') {
+                        key.style.backgroundColor = 'rgb(180, 180, 0)';
+                    }
                 }
-                let key = document.querySelector(`.KeyboardContainer .key[data-key="${tileValue}"]`);
-                if (key) key.style.backgroundColor = 'rgb(180, 180, 180)';
             });
     
             if (currentRow < rows.length - 1) {
