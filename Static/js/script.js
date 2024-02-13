@@ -111,10 +111,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
             }
             console.log(`${tileWord} exists in the database.`);
     
-            currentRowInputs.forEach(input => {
-                input.disabled = true;
-            });
-    
             // First pass: check for green
             currentRowInputs.forEach((tile, tileIndex) => {
                 let tileValue = tile.value.toLowerCase();
@@ -137,12 +133,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 if (key) key.style.backgroundColor = 'rgb(180, 180, 180)';
             });
     
-            // If the current row is not the last row, enable inputs in the next row
             if (currentRow < rows.length - 1) {
                 currentRow++;
-                rows[currentRow].querySelectorAll('input').forEach(input => {
-                    input.disabled = false;
-                });
             }
         });
     }
