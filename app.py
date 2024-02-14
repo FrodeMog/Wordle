@@ -1,11 +1,15 @@
-from flask import Flask, render_template
-from flask import jsonify
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, SubmitField
+from wtforms.validators import DataRequired
 from sqlalchemy import inspect
+from wtforms.validators import DataRequired, EqualTo
 import random
 import os
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'test1234'
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'words.db')
@@ -18,6 +22,51 @@ class Word(db.Model):
 class ValidInputWord(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     word = db.Column(db.String(100), unique=True)
+
+class LoginForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    submit = SubmitField('Login')
+
+class RegistrationForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Register')
+
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    login_form = LoginForm()
+    register_form = RegistrationForm()
+    return render_template('index.html', login_form=login_form, register_form=register_form)
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        # Here you should add the logic to create the new user
+        # For example, you might add the new user to your database
+        return redirect(url_for('login'))
+    return render_template('register.html', form=form)
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    error = None
+    form = LoginForm()
+    if form.validate_on_submit():
+        username = "test"
+        password = "test"
+        if form.username.data == username and form.password.data == password:
+            session['username'] = form.username.data
+            return redirect(url_for('home'))
+        else:
+            error = 'Invalid username or password'
+    return render_template('login.html', error=error, form=form)
+
+@app.route('/logout')
+def logout():
+    session.pop('username', None)
+    return redirect(url_for('index'))
 
 @app.route('/api/randomWord', methods=['GET'])
 def get_word():

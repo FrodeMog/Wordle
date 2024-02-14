@@ -5,6 +5,30 @@ document.addEventListener('DOMContentLoaded', (event) => {
     let testWord = "words";
     let wordToCheck = 'hunch';
 
+    let loginModal = document.getElementById("loginModal");
+    let loginBtn = document.getElementById("loginButton");
+    let registerModal = document.getElementById("registerModal");
+    let registerBtn = document.getElementById("registerButton");
+    let span = document.getElementsByClassName("close");
+    
+    loginBtn.onclick = function() {
+        loginModal.style.display = "block";
+    }
+    
+    registerBtn.onclick = function() {
+        registerModal.style.display = "block";
+    }
+    
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+        if (event.target == loginModal) {
+            loginModal.style.display = "none";
+        }
+        if (event.target == registerModal) {
+            registerModal.style.display = "none";
+        }
+    }
+
     getRandomWord().then(word => {
         console.log(`The word to guess is: ${word}`);
         testWord = word;

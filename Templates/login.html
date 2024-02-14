@@ -1,0 +1,14 @@
+<!-- login.html -->
+<form method="POST" action="{{ url_for('login') }}">
+    {{ form.hidden_tag() }}
+    {% if error %}
+    <p class="error">{{ error }}</p>
+    {% endif %}
+    <p>
+        {{ form.username(size=32, placeholder=form.username.label.text) }}
+    </p>
+    <p>
+        {{ form.password(size=32, placeholder=form.password.label.text) }}
+    </p>
+    <p>{{ form.submit() }}</p>
+</form>

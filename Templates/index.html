@@ -13,6 +13,18 @@
 
 <body>
     <main>
+        {% if session['username'] %}
+        <div id="username-display">
+            <p>You are logged in as {{ session['username'] }}</p>
+            <button id="logoutButton" onclick="location.href='{{ url_for('logout') }}'">Log Out</button>
+        </div>
+        {% else %}
+            <div id="username-display">
+                <p>You are not logged in.</p>
+            </div>
+        {% endif %}
+        <button id="loginButton">Log In</button>
+        <button id="registerButton">Register</button>
         <div class="TopContainer"> 
             <div class="GameContainer">
                 <h1>Wordle</h1>
@@ -20,6 +32,22 @@
                 <div id="toast" class="toast">This is a toast message.</div>
             </div>
             <script src="{{ url_for('static', filename='js/GameContainer.js') }}"></script>
+        </div>
+        <div id="loginModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                {% with form=login_form %}
+                    {% include 'login.html' %}
+                {% endwith %}
+            </div>
+        </div>
+        <div id="registerModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                {% with form=register_form %}
+                    {% include 'register.html' %}
+                {% endwith %}
+            </div>
         </div>
     </main>
 </body>
