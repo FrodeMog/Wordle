@@ -19,6 +19,17 @@ class User(db.Model):
 
     def __repr__(self):
         return '<User %r>' % self.username
+    
+class Score(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    wins = db.Column(db.Integer, default=0)
+    losses = db.Column(db.Integer, default=0)
+
+    def __init__(self, username, wins=0, losses=0):
+        self.username = username
+        self.wins = wins
+        self.losses = losses
 
 class Word(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -70,6 +81,25 @@ class RegistrationForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Register')
+
+@app.route('/update_score', methods=['POST'])
+def update_score():
+    data = request.get_json()
+    username = data.get('username')
+    wins = data.get('wins')
+    losses = data.get('losses')
+
+    score = Score.query.filter_by(username=username).first()
+    if score:
+        if wins is not None:
+            score.wins += wins
+        if losses is not None:
+            score.losses += losses
+    else:
+        score = Score(username=username, wins=wins if wins is not None else 0, losses=losses if losses is not None else 0)
+        db.session.add(score)
+    db.session.commit()
+    return jsonify({'message': 'Score updated successfully'}), 200
 
 @app.route('/', methods=['GET', 'POST'])
 def index():

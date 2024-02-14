@@ -4,6 +4,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
     let currentRow = 0;
     let testWord = "words";
     let wordToCheck = 'hunch';
+    let gameState = "playing";
+    let sessionUsername;
 
     let loginModal = document.getElementById("loginModal");
     let loginBtn = document.getElementById("loginButton");
@@ -82,6 +84,34 @@ document.addEventListener('DOMContentLoaded', (event) => {
     });
 
     //API
+    function updateScore(wins, losses) {
+        try {
+            if (!sessionUsername) {
+                console.log('User not logged in. Score will not be updated.');
+                return;
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            return;
+        }
+        fetch('/update_score', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                username: sessionUsername, 
+                wins: wins,
+                losses: losses,
+            }),
+        })
+        .then(response => response.json())
+        .then(data => console.log(data))
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+
     function getRandomWord() {
         return fetch('/api/randomWord')
             .then(response => {
@@ -176,14 +206,28 @@ document.addEventListener('DOMContentLoaded', (event) => {
                     }
                 }
             });
+
+            console.log("gameState: " + gameState)
     
             // Check if the user has won
             if (tileWord === testWord) {
-                showToast(`Congratulations, you won! The correct word was '${testWord}'.`);
+                if (gameState === 'playing') {
+                    showToast(`Congratulations, you won! The correct word was '${testWord}'.`);
+                    updateScore(1, 0);  // Update the score with 1 win and 0 losses
+                    gameState = 'won'; 
+                } else {
+                    showToast('Please reset the game.');
+                }
             } else if (currentRow < rows.length - 1) {
                 currentRow++;
             } else {
-                showToast(`You have reached the maximum number of attempts. The correct word was '${testWord}'.`);
+                if (gameState === 'playing') {
+                    showToast(`You have reached the maximum number of attempts. The correct word was '${testWord}'.`);
+                    updateScore(0, 1);  // Update the score with 0 wins and 1 loss
+                    gameState = 'lost'; 
+                } else {
+                    showToast('Please reset the game.');
+                }
             }
         });
     }
@@ -204,6 +248,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
             console.log(`The new word to guess is: ${word}`);
             testWord = word;
         });
+        gameState = 'playing';
     }
 
     function showToast(message) {

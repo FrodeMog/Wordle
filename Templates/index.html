@@ -15,6 +15,9 @@
     <main>
         {% if session['username'] %}
         <div id="username-display">
+            <script>
+                window.sessionUsername = "{{ session['username'] }}";
+            </script>
             <p>You are logged in as {{ session['username'] }}</p>
             <button id="logoutButton" onclick="location.href='{{ url_for('logout') }}'">Log Out</button>
         </div>
