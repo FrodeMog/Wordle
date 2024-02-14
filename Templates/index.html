@@ -13,10 +13,12 @@
 
 <body>
     <main>
+        
+    <div>
         {% if session['username'] %}
         <div id="username-display">
             <script>
-                window.sessionUsername = "{{ session['username'] }}";
+                var sessionUsername = "{{ session['username'] }}";
             </script>
             <p>You are logged in as {{ session['username'] }}</p>
             <button id="logoutButton" onclick="location.href='{{ url_for('logout') }}'">Log Out</button>
@@ -24,11 +26,13 @@
         {% else %}
             <div id="username-display">
                 <p>You are not logged in.</p>
+                <button id="loginButton">Log In</button>
+                <button id="registerButton">Register</button>
             </div>
         {% endif %}
-        <button id="loginButton">Log In</button>
-        <button id="registerButton">Register</button>
-        <div class="TopContainer"> 
+        <p>Score: <span id="score"></span></p>
+    </div>
+    <div class="TopContainer"> 
             <div class="GameContainer">
                 <h1>Wordle</h1>
                 <button tabindex="-1" id="resetButton">Reset</button>

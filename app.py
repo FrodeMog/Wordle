@@ -101,6 +101,18 @@ def update_score():
     db.session.commit()
     return jsonify({'message': 'Score updated successfully'}), 200
 
+@app.route('/get_score', methods=['GET'])
+def get_score():
+    username = request.args.get('username')
+    if username:
+        score = Score.query.filter_by(username=username).first()
+        if score:
+            return jsonify({'wins': score.wins, 'losses': score.losses})
+        else:
+            return jsonify({'error': 'User not found'}), 404
+    else:
+        return jsonify({'error': 'Username not provided'}), 400
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     login_form = LoginForm()

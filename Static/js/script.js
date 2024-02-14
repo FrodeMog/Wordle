@@ -5,20 +5,37 @@ document.addEventListener('DOMContentLoaded', (event) => {
     let testWord = "words";
     let wordToCheck = 'hunch';
     let gameState = "playing";
-    let sessionUsername;
 
     let loginModal = document.getElementById("loginModal");
     let loginBtn = document.getElementById("loginButton");
     let registerModal = document.getElementById("registerModal");
     let registerBtn = document.getElementById("registerButton");
     let span = document.getElementsByClassName("close");
-    
-    loginBtn.onclick = function() {
-        loginModal.style.display = "block";
+
+    try {
+        if (sessionUsername) {
+            getScore();
+        }
+    } catch (error) {
+
+    }
+
+    if (loginBtn) {
+        loginBtn.onclick = function() {
+            let loginModal = document.getElementById('loginModal');
+            if (loginModal) {
+                loginModal.style.display = "block";
+            }
+        }
     }
     
-    registerBtn.onclick = function() {
-        registerModal.style.display = "block";
+    if (registerBtn) {
+        registerBtn.onclick = function() {
+            let registerModal = document.getElementById('registerModal');
+            if (registerModal) {
+                registerModal.style.display = "block";
+            }
+        }
     }
     
     // When the user clicks anywhere outside of the modal, close it
@@ -107,6 +124,36 @@ document.addEventListener('DOMContentLoaded', (event) => {
         })
         .then(response => response.json())
         .then(data => console.log(data))
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+
+    function getScore() {
+        try {
+            if (!sessionUsername) {
+                console.log('User not logged in. Score will not be updated.');
+                return;
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            return;
+        }
+        fetch(`/get_score?username=${sessionUsername}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                console.error(`Error getting score for ${sessionUsername}:`, data.error);
+            } else {
+                // Update the score label with the score
+                document.getElementById('score').textContent = `Wins: ${data.wins}, Losses: ${data.losses}`;
+            }
+        })
         .catch((error) => {
             console.error('Error:', error);
         });
@@ -214,6 +261,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 if (gameState === 'playing') {
                     showToast(`Congratulations, you won! The correct word was '${testWord}'.`);
                     updateScore(1, 0);  // Update the score with 1 win and 0 losses
+                    getScore();
                     gameState = 'won'; 
                 } else {
                     showToast('Please reset the game.');
@@ -224,6 +272,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 if (gameState === 'playing') {
                     showToast(`You have reached the maximum number of attempts. The correct word was '${testWord}'.`);
                     updateScore(0, 1);  // Update the score with 0 wins and 1 loss
+                    getScore();
                     gameState = 'lost'; 
                 } else {
                     showToast('Please reset the game.');
