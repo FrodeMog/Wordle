@@ -9,7 +9,7 @@ h1 {
 }
 
 .TopContainer {
-    background-color: rgb(148, 148, 148, 0);
+    background-color: rgb(122, 122, 122, 0);
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -174,13 +174,30 @@ h1 {
     margin: 15% auto; 
     padding: 20px;
     border: 1px solid #888;
-    width: 80%;
+    width: 20%; 
+    border-radius: 10px;
 }
 
 #username-display {
     color: #333;
-    background-color: #f9f9f9;
-    padding: 10px;
+    background-color: rgb(255, 255, 255); 
+    width: 200px;
+    padding: 5px;
     border-radius: 5px;
-    margin-bottom: 20px;
+    margin-bottom: 5px;
+}
+
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 200px;
+    overflow: auto;
+    padding: 10px;
+    background-color: rgb(122, 122, 122, 0);
+}
+
+body {
+    margin-left: 0px;  
 }

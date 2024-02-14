@@ -13,28 +13,27 @@
 
 <body>
     <main>
-        
-    <div>
-        {% if session['username'] %}
-        <div id="username-display">
-            <script>
-                var sessionUsername = "{{ session['username'] }}";
-            </script>
-            <p>You are logged in as {{ session['username'] }}</p>
-            <button id="logoutButton" onclick="location.href='{{ url_for('logout') }}'">Log Out</button>
-        </div>
-        {% else %}
-            <div id="username-display">
-                <p>You are not logged in.</p>
-                <button id="loginButton">Log In</button>
-                <button id="registerButton">Register</button>
-            </div>
-        {% endif %}
-        <p>Score: <span id="score"></span></p>
-    </div>
     <div class="TopContainer"> 
+        <div class="sidebar">
+            {% if session['username'] %}
+            <div id="username-display">
+                <script>
+                    var sessionUsername = "{{ session['username'] }}";
+                </script>
+                <p>You are logged in as {{ session['username'] }}</p>
+                <button id="logoutButton" onclick="location.href='{{ url_for('logout') }}'">Log Out</button>
+            </div>
+            {% else %}
+                <div id="username-display">
+                    <p>You are not logged in.</p>
+                    <button id="loginButton">Log In</button>
+                    <button id="registerButton">Register</button>
+                </div>
+            {% endif %}
+        </div>
             <div class="GameContainer">
                 <h1>Wordle</h1>
+                <p>Score: <span id="score"></span></p>
                 <button tabindex="-1" id="resetButton">Reset</button>
                 <div id="toast" class="toast">This is a toast message.</div>
             </div>
