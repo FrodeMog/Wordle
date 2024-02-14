@@ -87,7 +87,7 @@ def update_score():
     wins = data.get('wins')
     losses = data.get('losses')
 
-    score = Score.query.filter_by(username=username).first()
+    score = Score.query.filter_by(username=username.lower()).first()
     if score:
         if wins is not None:
             score.wins += wins
@@ -103,7 +103,7 @@ def update_score():
 def get_score():
     username = request.args.get('username')
     if username:
-        score = Score.query.filter_by(username=username).first()
+        score = Score.query.filter_by(username=username.lower()).first()
         if score:
             return jsonify({'wins': score.wins, 'losses': score.losses})
         else:
@@ -121,11 +121,18 @@ def index():
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
+        existing_user = User.query.filter_by(username=form.username.data.lower()).first()
+        if existing_user:
+            error = 'A user with that username already exists.'
+            return render_template('register.html', error=error, form=form)
         hashed_password = generate_password_hash(form.password.data, method='pbkdf2:sha256')
         new_user = User(username=form.username.data.lower(), password=hashed_password)
         db.session.add(new_user)
         db.session.commit()
         return redirect(url_for('login'))
+    elif form.errors:
+        error = list(form.errors.values())[0][0] 
+        return render_template('register.html', error=error, form=form)
     return render_template('register.html', form=form)
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -135,7 +142,7 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data.lower()).first()
         if user and check_password_hash(user.password, form.password.data):
-            session['username'] = form.username.data
+            session['username'] = form.username.data.lower()
             return redirect(url_for('home'))
         else:
             error = 'Invalid username or password'

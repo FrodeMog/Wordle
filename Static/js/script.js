@@ -298,6 +298,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
             testWord = word;
         });
         gameState = 'playing';
+        getScore();
     }
 
     function showToast(message) {
