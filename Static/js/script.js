@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', (event) => {
     const rows = document.querySelectorAll('.RowContainer');
+    let resetButton = document.getElementById('resetButton');
     let currentRow = 0;
     let testWord = "words";
     let wordToCheck = 'hunch';
@@ -16,6 +17,11 @@ document.addEventListener('DOMContentLoaded', (event) => {
         });
     });
 
+    resetButton.addEventListener('click', () => {
+        resetGame();
+        resetButton.blur();
+    });
+
     // Handle onscreen keyboard
     window.handleClick = function(button) {
         let key = button.getAttribute('data-key');
@@ -23,6 +29,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         const nextTile = Array.from(currentRowInputs).find(tile => tile.value === '');
 
         console.log(key);
+        button.blur();
 
         if(key === 'backspace') {
             handleBackspaceKey()
@@ -148,13 +155,11 @@ document.addEventListener('DOMContentLoaded', (event) => {
     
             // Check if the user has won
             if (tileWord === testWord) {
-                showToast(`Congratulations, you won! The correct word was '${testWord}'. The game will now reset.`);
-                resetGame();
+                showToast(`Congratulations, you won! The correct word was '${testWord}'.`);
             } else if (currentRow < rows.length - 1) {
                 currentRow++;
             } else {
-                showToast(`You have reached the maximum number of attempts. The correct word was '${testWord}'. The game will now reset.`);
-                resetGame();
+                showToast(`You have reached the maximum number of attempts. The correct word was '${testWord}'.`);
             }
         });
     }
