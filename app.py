@@ -5,15 +5,20 @@ from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired
 from sqlalchemy import inspect
 from wtforms.validators import DataRequired, EqualTo
+from werkzeug.security import generate_password_hash, check_password_hash
 import random
 import os
 
-app = Flask(__name__)
-app.config['SECRET_KEY'] = 'test1234'
+db = SQLAlchemy()
 
-basedir = os.path.abspath(os.path.dirname(__file__))
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'words.db')
-db = SQLAlchemy(app)
+# Database models
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    password = db.Column(db.String(120), nullable=False)
+
+    def __repr__(self):
+        return '<User %r>' % self.username
 
 class Word(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -22,6 +27,38 @@ class Word(db.Model):
 class ValidInputWord(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     word = db.Column(db.String(100), unique=True)
+
+def create_app():
+    app = Flask(__name__)
+    app.config['SECRET_KEY'] = 'VerySecureHardcodedKey'
+
+    basedir = os.path.abspath(os.path.dirname(__file__))
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'database.db')
+
+    db.init_app(app)
+
+    with app.app_context():
+        db.create_all()
+
+        if not Word.query.first():
+            # Insert words into the table
+            with open('words.txt', 'r') as file:
+                for word in file.read().split():
+                    db.session.add(Word(word=word))
+
+        if not ValidInputWord.query.first():
+            # Insert words into the table
+            with open('ValidInputWords.txt', 'r') as file:
+                for word in file.read().split():
+                    db.session.add(ValidInputWord(word=word))
+
+        # Commit the changes
+        db.session.commit()
+
+    return app
+
+# Create a new instance of the application
+app = create_app()
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
@@ -44,8 +81,10 @@ def index():
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
-        # Here you should add the logic to create the new user
-        # For example, you might add the new user to your database
+        hashed_password = generate_password_hash(form.password.data, method='pbkdf2:sha256')
+        new_user = User(username=form.username.data, password=hashed_password)
+        db.session.add(new_user)
+        db.session.commit()
         return redirect(url_for('login'))
     return render_template('register.html', form=form)
 
@@ -54,9 +93,8 @@ def login():
     error = None
     form = LoginForm()
     if form.validate_on_submit():
-        username = "test"
-        password = "test"
-        if form.username.data == username and form.password.data == password:
+        user = User.query.filter_by(username=form.username.data).first()
+        if user and check_password_hash(user.password, form.password.data):
             session['username'] = form.username.data
             return redirect(url_for('home'))
         else:
@@ -80,35 +118,8 @@ def check_word(word):
     word_obj = ValidInputWord.query.filter_by(word=word).first()
     return jsonify({'exists': word_obj is not None})
 
-
 @app.route('/')
 def home():
-    # Create an inspector
-    inspector = inspect(db.engine)
-
-    # Check if the words table exists
-    if 'word' not in inspector.get_table_names():
-        # Create the database and the words table
-        db.create_all()
-
-        # Insert words into the table
-        with open('words.txt', 'r') as file:
-            for word in file.read().split():
-                if not Word.query.filter_by(word=word).first():
-                    db.session.add(Word(word=word))
-
-    # Check if the valid_input_word table exists
-    if 'valid_input_word' not in inspector.get_table_names():
-        # Insert words into the table
-        with open('ValidInputWords.txt', 'r') as file:
-            for word in file.read().split():
-                if not ValidInputWord.query.filter_by(word=word).first():
-                    db.session.add(ValidInputWord(word=word))
-    
-
-    # Commit the changes
-    db.session.commit()
-
     # Query the database and get all words
     words = Word.query.all()
 
